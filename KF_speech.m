@@ -70,6 +70,14 @@ for snri = 1:length(SNR)
     %calculate measurement noise variance R
     R = measurementNoiseNew(segment, fs);
     
+    %store J1,J2,nq values for voiced and silent frame for each Q and each SNR
+    J1v = zeros(3,7,10);
+    J1s = zeros(3,7,10);
+    J2v = zeros(3,7,10);
+    J2s = zeros(3,7,10);
+    nqv = zeros(3,7,10);
+    nqs = zeros(3,7,10);
+    
     J1=zeros(1,10);
     J2=zeros(1,10);
     nq=zeros(1,10);
@@ -131,6 +139,9 @@ for snri = 1:length(SNR)
             
             %plot J1,J2 for voiced frame
             if(i == 4)
+                J1v(snri,m+1,:) = J1;
+                J2v(snri,m+1,:) = J2;
+                nqv(snri,m+1,:) = nq;
                 figure(1);
                 plot(nqi,J1i,'-b+');hold on;grid on;
                 plot(nqi,J2i,'-b*');hold on;grid on;
@@ -139,6 +150,9 @@ for snri = 1:length(SNR)
             
             %plot J1,J2 for silent frame
             if(i == totseg - 1)
+                J1s(snri,m+1,:) = J1;
+                J2s(snri,m+1,:) = J2;
+                nqs(snri,m+1,:) = nq;
                 figure(1);
                 plot(nqi,J1i,'-r+');hold on;grid on;
                 plot(nqi,J2i,'-r*');hold on;grid on;
@@ -251,7 +265,10 @@ for snri = 1:length(SNR)
         close all;  
     end
 end
-fclose('all');
-end
 
+%save all J1,J2 values
+save([saveToPath, 'J1_J2_plots_',type,'.mat'],'J1v','J2v','nqv','J1s','J2s','nqs');
+fclose('all');
+
+end
 
