@@ -68,7 +68,7 @@ for snri = 1:length(SNR)
     end
     
     %calculate measurement noise variance R
-    R = measurementNoiseNew(segment, fs);
+    [R,silent_frames] = measurementNoiseNew(segment, fs);
     
     %store J1,J2,nq values for voiced and silent frame for each Q and each SNR
     J1v = zeros(3,7,10);
@@ -82,6 +82,10 @@ for snri = 1:length(SNR)
     J2=zeros(1,10);
     nq=zeros(1,10);
     u=1;
+    
+    %get voiced and silent frames
+    v = find(silent_frames,1);
+    s = find(silent_frames == 0,1);
     
     for m = 0:6
         
@@ -138,7 +142,7 @@ for snri = 1:length(SNR)
             Q = 10^(nqi(index));
             
             %plot J1,J2 for voiced frame
-            if(i == 4)
+            if(i == v)
                 J1v(snri,m+1,:) = J1;
                 J2v(snri,m+1,:) = J2;
                 nqv(snri,m+1,:) = nq;
@@ -149,7 +153,7 @@ for snri = 1:length(SNR)
             end
             
             %plot J1,J2 for silent frame
-            if(i == totseg - 1)
+            if(i == s)
                 J1s(snri,m+1,:) = J1;
                 J2s(snri,m+1,:) = J2;
                 nqs(snri,m+1,:) = nq;
