@@ -1,9 +1,16 @@
-function [ order ] = findOrder(noisy, dB, type, saveToPath)
+function [ order ] = findOrder(noisy, varargin)
 %estimates order of each frame of noisy signal
 totseg = size(noisy,1);
 order = zeros(totseg,1);
 %we assume maximum order to be 100
 T = 100;
+
+
+if(length(varargin) == 3)
+    dB = varargin{1};
+    type = varargin{2};
+    saveToPath = varargin{3};
+end
 
 for i = 1:totseg
     [arcoefs,noisevar,reflection_coefs] = aryule(noisy(i,:),T);
@@ -43,8 +50,10 @@ for i = 1:totseg
     end
 end
 
-saveas(figure(5),[saveToPath,'PACF_plot_voiced_frame_',type,'_',num2str(dB),'dB']);
-saveas(figure(6),[saveToPath,'PACF_plot_silent_frame_',type,'_',num2str(dB),'dB']);
+if(length(varargin) == 3)
+    saveas(figure(5),[saveToPath,'PACF_plot_voiced_frame_',type,'_',num2str(dB),'dB']);
+    saveas(figure(6),[saveToPath,'PACF_plot_silent_frame_',type,'_',num2str(dB),'dB']);
+end
         
     
 end
