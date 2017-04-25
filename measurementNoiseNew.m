@@ -1,10 +1,12 @@
-function [R] = measurementNoiseNew(xseg,fs)
+function [R, varargout] = measurementNoiseNew(xseg,fs)
 %new method of calculating measurement noise based on PSD
 
 
 numFrame = size(xseg,1);
 noise_cov = zeros(1,numFrame);
 spectral_flatness = zeros(1,numFrame);
+silent_frames = zeros(1,numFrame);
+
 %order estimation for voiced and silent frames
 for k = 1:numFrame
     
@@ -27,10 +29,13 @@ normalized_flatness = spectral_flatness/max(spectral_flatness);
 threshold = 0.707;
 for k = 1:numFrame
     if normalized_flatness(k) >= threshold
+        silent_frames(k) = 1;
         noise_cov(k) = var(xseg(k,:));
     end
 end
 
 R = max(noise_cov)
+varargout{1} = silent_frames;
+
 end
 
